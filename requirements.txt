@@ -1,0 +1,4 @@
+flask
+twilio
+psycopg2-binary
+python-dotenv
