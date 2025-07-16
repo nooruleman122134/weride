@@ -1,0 +1,4 @@
+.env
+api/firebase/weride-adminsdk.json
+__pycache__/
+*.pyc
