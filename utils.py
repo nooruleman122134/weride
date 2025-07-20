@@ -1,19 +1,39 @@
+# utils.py
+import os
 from twilio.rest import Client
-from config import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
+from dotenv import load_dotenv
 
-def make_call(to_number, message_text):
+load_dotenv()
+
+client = Client(
+    os.getenv("TWILIO_ACCOUNT_SID"),
+    os.getenv("TWILIO_AUTH_TOKEN")
+)
+
+TWILIO_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+
+
+def make_voice_call(to, message_url):
     try:
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        
         call = client.calls.create(
-            twiml=f'<Response><Say>{message_text}</Say></Response>',
-            to=to_number,
-            from_=TWILIO_PHONE_NUMBER
+            to=to,
+            from_=TWILIO_NUMBER,
+            url=message_url  # TwiML or webhook
         )
-
-        print("✅ Twilio call initiated. Call SID:", call.sid)
         return call.sid
-
     except Exception as e:
-        print("❌ Twilio Call Error:", e)
+        print("❌ Call Error:", e)
+        return None
+
+
+def send_sms(to, body):
+    try:
+        message = client.messages.create(
+            to=to,
+            from_=TWILIO_NUMBER,
+            body=body
+        )
+        return message.sid
+    except Exception as e:
+        print("❌ SMS Error:", e)
         return None

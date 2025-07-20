@@ -1,4 +1,7 @@
 flask
+flask-sqlalchemy
 twilio
 psycopg2-binary
 python-dotenv
+firebase-admin
+requests

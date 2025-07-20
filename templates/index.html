@@ -1,18 +1,450 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>WeRide - Book Your Ride</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeRide AI Caller - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #FFE066;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .action-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .phone-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 0.5rem 0;
+        }
+        
+        .phone-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-connected {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status-demo {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .feature-list {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-list h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .feature-list ul {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-list li i {
+            color: #48bb78;
+            width: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .stats-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Book a Ride</h2>
-    <form method="POST">
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br><br>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                WeRide AI Caller
+            </div>
+            <nav class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="/book"><i class="fas fa-plus-circle"></i> Book Ride</a>
+                <a href="#logs"><i class="fas fa-list"></i> Call Logs</a>
+            </nav>
+        </div>
+    </header>
 
-        <label>Phone Number (with +92):</label><br>
-        <input type="tel" name="phone" required><br><br>
+    <div class="main-container">
+        <div class="hero">
+            <h1><i class="fas fa-phone-alt"></i> WeRide AI Caller</h1>
+            <p>Advanced AI-powered voice calling system for ride-sharing automation</p>
+            <div class="status-badge {{ 'status-connected' if twilio_status == 'Connected' else 'status-demo' }}">
+                {{ twilio_status }}
+            </div>
+        </div>
 
-        <button type="submit">Book Ride & Receive AI Call</button>
-    </form>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-phone"></i>
+                <h3>{{ total_calls }}</h3>
+                <p>Total Calls Made</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-car"></i>
+                <h3>{{ active_rides }}</h3>
+                <p>Active Rides</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <h3>98.5%</h3>
+                <p>Success Rate</p>
+            </div>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card">
+                <h3><i class="fas fa-car-alt"></i> Driver Arrival</h3>
+                <p>Notify passengers when their driver has arrived at the pickup location.</p>
+                <input type="tel" class="phone-input" id="arrivalPhone" placeholder="Enter phone number (e.g., +923001234567)">
+                <button class="btn btn-primary" onclick="triggerArrival()">
+                    <i class="fas fa-phone"></i> Call Now
+                </button>
+            </div>
+
+            <div class="action-card">
+                <h3><i class="fas fa-shield-alt"></i> Safety Check</h3>
+                <p>Perform automated safety checks during rides with emergency response.</p>
+                <input type="tel" class="phone-input" id="safetyPhone" placeholder="Enter phone number (e.g., +923001234567)">
+                <button class="btn btn-warning" onclick="triggerSafety()">
+                    <i class="fas fa-exclamation-triangle"></i> Safety Call
+                </button>
+            </div>
+
+            <div class="action-card">
+                <h3><i class="fas fa-star"></i> Feedback Collection</h3>
+                <p>Automatically collect ride feedback and ratings from passengers.</p>
+                <input type="tel" class="phone-input" id="feedbackPhone" placeholder="Enter phone number (e.g., +923001234567)">
+                <button class="btn btn-success" onclick="triggerFeedback()">
+                    <i class="fas fa-comment"></i> Request Feedback
+                </button>
+            </div>
+
+            <div class="action-card">
+                <h3><i class="fas fa-plus-circle"></i> Book Ride</h3>
+                <p>Create a new ride booking with automated confirmation calls.</p>
+                <a href="/book" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New Booking
+                </a>
+            </div>
+        </div>
+
+        <div class="feature-list">
+            <h3><i class="fas fa-list-check"></i> AI Caller Features</h3>
+            <ul>
+                <li><i class="fas fa-check"></i> Automated driver arrival notifications</li>
+                <li><i class="fas fa-check"></i> Real-time safety monitoring and alerts</li>
+                <li><i class="fas fa-check"></i> Post-ride feedback collection</li>
+                <li><i class="fas fa-check"></i> Natural language voice interactions</li>
+                <li><i class="fas fa-check"></i> Multi-language support</li>
+                <li><i class="fas fa-check"></i> Emergency response integration</li>
+                <li><i class="fas fa-check"></i> Call logging and analytics</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function triggerArrival() {
+            const phone = document.getElementById('arrivalPhone').value;
+            if (!phone) {
+                alert('Please enter a phone number');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/trigger-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        type: 'arrival'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('🚗 Arrival call initiated successfully!');
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+        
+        async function triggerSafety() {
+            const phone = document.getElementById('safetyPhone').value;
+            if (!phone) {
+                alert('Please enter a phone number');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/trigger-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        type: 'safety'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('⚠️ Safety check call initiated successfully!');
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+        
+        async function triggerFeedback() {
+            const phone = document.getElementById('feedbackPhone').value;
+            if (!phone) {
+                alert('Please enter a phone number');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/trigger-call', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        type: 'feedback'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('📝 Feedback call initiated successfully!');
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeRide AI - Book Real Ride</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .booking-form, .drivers-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .price-input {
+            background: #f7fafc;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .drivers-panel h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .driver-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .driver-card:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+        
+        .driver-card.online {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .driver-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .driver-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .driver-details {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .driver-rating {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .stars {
+            color: #ffd700;
+            margin-right: 5px;
+        }
+        
+        .online-indicator {
+            width: 12px;
+            height: 12px;
+            background: #48bb78;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .offline-indicator {
+            width: 12px;
+            height: 12px;
+            background: #cbd5e0;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .ride-progress {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-step {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #e2e8f0;
+        }
+        
+        .progress-step.active {
+            border-left-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .progress-step.completed {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        @media (max-width: 768px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .indrive-notice {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .offer-section {
+            display: none;
+            background: #e6fffa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #38b2ac;
+        }
+        
+        .offer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .accept-btn {
+            padding: 8px 15px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .reject-btn {
+            padding: 8px 15px;
+            background: #f56565;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-car"></i> WeRide AI - Book Your Ride</h1>
+            <p>Set your price, see real drivers, get instant AI confirmations</p>
+        </div>
+        
+        <div class="indrive-notice">
+            <strong><i class="fas fa-info-circle"></i> InDrive Style:</strong> 
+            Set your own price! Drivers will see your offer and can accept or counter-offer.
+        </div>
+        
+        <div class="booking-grid">
+            <!-- Booking Form -->
+            <div class="booking-form">
+                <h3><i class="fas fa-map-marker-alt"></i> Book Your Ride</h3>
+                <form id="realBookingForm">
+                    <div class="form-group">
+                        <label for="passengerName">Your Name</label>
+                        <input type="text" id="passengerName" placeholder="Enter your name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passengerPhone">Phone Number</label>
+                        <input type="tel" id="passengerPhone" placeholder="+923001234567" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pickupLocation">Pickup Location</label>
+                        <input type="text" id="pickupLocation" placeholder="Where should the driver pick you up?" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="destinationLocation">Destination</label>
+                        <input type="text" id="destinationLocation" placeholder="Where are you going?" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priceOffer">Your Price Offer (PKR)</label>
+                        <input type="number" id="priceOffer" class="price-input" placeholder="300" min="50" required>
+                        <small>💡 Tip: Fair prices get more offers from drivers!</small>
+                    </div>
+                    
+                    <button type="submit">
+                        <i class="fas fa-paper-plane"></i> Send Ride Request
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Available Drivers -->
+            <div class="drivers-panel">
+                <h3><i class="fas fa-users"></i> Available Drivers</h3>
+                <div id="driversList">
+                    <div class="driver-card online">
+                        <div class="online-indicator"></div>
+                        <div class="driver-info">
+                            <div class="driver-name">Ahmed Khan</div>
+                            <div class="driver-details">Toyota Corolla 2020 • ABC-123</div>
+                            <div class="driver-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.8 (127 rides)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="driver-card online">
+                        <div class="online-indicator"></div>
+                        <div class="driver-info">
+                            <div class="driver-name">Muhammad Ali</div>
+                            <div class="driver-details">Honda Civic 2019 • XYZ-789</div>
+                            <div class="driver-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span>4.6 (89 rides)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="driver-card online">
+                        <div class="online-indicator"></div>
+                        <div class="driver-info">
+                            <div class="driver-name">Fatima Sheikh</div>
+                            <div class="driver-details">Suzuki Alto 2021 • DEF-456</div>
+                            <div class="driver-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>4.9 (156 rides)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="refreshDrivers()" style="margin-top: 15px; background: #38b2ac;">
+                    <i class="fas fa-refresh"></i> Refresh Drivers
+                </button>
+            </div>
+        </div>
+        
+        <!-- Offers Section -->
+        <div class="offer-section" id="offersSection">
+            <h3><i class="fas fa-handshake"></i> Driver Offers</h3>
+            <div id="offersList"></div>
+        </div>
+        
+        <!-- Ride Progress -->
+        <div class="ride-progress" id="rideProgress">
+            <h3><i class="fas fa-route"></i> Ride Progress</h3>
+            
+            <div class="progress-step completed">
+                <strong>✅ Ride Requested</strong>
+                <div>Your ride request has been sent to drivers</div>
+            </div>
+            
+            <div class="progress-step active">
+                <strong>🔄 Waiting for Driver</strong>
+                <div>Drivers are reviewing your offer...</div>
+            </div>
+            
+            <div class="progress-step">
+                <strong>🚗 Driver En Route</strong>
+                <div>Driver is coming to pick you up</div>
+            </div>
+            
+            <div class="progress-step">
+                <strong>📍 Driver Arrived</strong>
+                <div>You'll receive an AI call when driver arrives</div>
+            </div>
+            
+            <div class="progress-step">
+                <strong>🎯 Ride Completed</strong>
+                <div>You'll get an AI feedback call after the ride</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRideId = null;
+        let pollInterval = null;
+        
+        // Book ride form submission
+        document.getElementById('realBookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('passengerName').value,
+                phone: document.getElementById('passengerPhone').value,
+                pickup: document.getElementById('pickupLocation').value,
+                destination: document.getElementById('destinationLocation').value,
+                price_offer: document.getElementById('priceOffer').value
+            };
+            
+            try {
+                const response = await fetch('/api/create-ride', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentRideId = result.ride_id;
+                    document.getElementById('rideProgress').style.display = 'block';
+                    
+                    alert('🎉 Ride created! Drivers can now see your request. You\'ll get an AI confirmation call soon!');
+                    
+                    // Start polling for offers
+                    startOfferPolling();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Network error: ' + error.message);
+            }
+        });
+        
+        // Refresh drivers list
+        async function refreshDrivers() {
+            try {
+                const response = await fetch('/api/online-drivers');
+                const result = await response.json();
+                
+                const driversList = document.getElementById('driversList');
+                driversList.innerHTML = '';
+                
+                result.drivers.forEach(driver => {
+                    const driverCard = document.createElement('div');
+                    driverCard.className = 'driver-card online';
+                    driverCard.innerHTML = `
+                        <div class="online-indicator"></div>
+                        <div class="driver-info">
+                            <div class="driver-name">${driver.name}</div>
+                            <div class="driver-details">${driver.vehicle} • ${driver.license_plate}</div>
+                            <div class="driver-rating">
+                                <span class="stars">${getStars(driver.rating)}</span>
+                                <span>${driver.rating.toFixed(1)} (${driver.total_rides || 0} rides)</span>
+                            </div>
+                        </div>
+                    `;
+                    driversList.appendChild(driverCard);
+                });
+                
+            } catch (error) {
+                console.error('Error refreshing drivers:', error);
+            }
+        }
+        
+        // Generate star rating
+        function getStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '★'.repeat(fullStars);
+            if (halfStar) stars += '☆';
+            stars += '☆'.repeat(5 - fullStars - (halfStar ? 1 : 0));
+            return stars;
+        }
+        
+        // Poll for offers
+        function startOfferPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            
+            pollInterval = setInterval(async () => {
+                try {
+                    // Simulate receiving offers (in real app, this would check for actual offers)
+                    if (Math.random() > 0.7) { // 30% chance per poll
+                        showMockOffer();
+                        clearInterval(pollInterval);
+                    }
+                } catch (error) {
+                    console.error('Error polling for offers:', error);
+                }
+            }, 3000); // Poll every 3 seconds
+        }
+        
+        // Show mock offer (for demonstration)
+        function showMockOffer() {
+            const offersSection = document.getElementById('offersSection');
+            const offersList = document.getElementById('offersList');
+            
+            const offer = document.createElement('div');
+            offer.className = 'offer-item';
+            offer.innerHTML = `
+                <div>
+                    <strong>Ahmed Khan</strong> - Toyota Corolla<br>
+                    <span style="color: #666;">Offers: PKR ${parseInt(document.getElementById('priceOffer').value) + 50}</span><br>
+                    <span style="font-size: 12px;">Arrives in 5 minutes</span>
+                </div>
+                <div>
+                    <button class="accept-btn" onclick="acceptOffer()">Accept</button>
+                    <button class="reject-btn" onclick="rejectOffer(this)">Decline</button>
+                </div>
+            `;
+            
+            offersList.appendChild(offer);
+            offersSection.style.display = 'block';
+        }
+        
+        // Accept offer
+        async function acceptOffer() {
+            alert('🎉 Offer accepted! Driver Ahmed Khan will pick you up. You\'ll receive AI confirmation calls!');
+            
+            // Update progress
+            const steps = document.querySelectorAll('.progress-step');
+            steps[1].classList.remove('active');
+            steps[1].classList.add('completed');
+            steps[2].classList.add('active');
+            
+            // Simulate driver arrival after 10 seconds
+            setTimeout(() => {
+                alert('📞 Driver has arrived! You should receive an AI call now.');
+                steps[2].classList.remove('active');
+                steps[2].classList.add('completed');
+                steps[3].classList.add('active');
+            }, 10000);
+        }
+        
+        // Reject offer
+        function rejectOffer(button) {
+            button.parentElement.parentElement.remove();
+        }
+        
+        // Load drivers on page load
+        window.onload = function() {
+            refreshDrivers();
+        };
+    </script>
+</body>
+</html>

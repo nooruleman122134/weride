@@ -1,23 +1,26 @@
 import firebase_admin
-from firebase_admin import credentials, db as fdb
+from firebase_admin import credentials, db
 import os
 from dotenv import load_dotenv
-from datetime import datetime
 
+# 🔄 Load .env
 load_dotenv()
 
+# 🔐 Firebase Credentials
 cred_path = os.getenv("FIREBASE_CRED_PATH")
 db_url = os.getenv("FIREBASE_DB")
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate(cred_path)
-    firebase_admin.initialize_app(cred, {'databaseURL': db_url})
+if not cred_path or not db_url:
+    raise Exception("❌ Firebase config missing in .env")
 
-def save_ride_to_firebase(name, phone):
-    ride_ref = fdb.reference("rides")
-    new_ref = ride_ref.push()
-    new_ref.set({
-        "name": name,
-        "phone": phone,
-        "timestamp": datetime.utcnow().isoformat()
-    })
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred, {
+    'databaseURL': db_url
+})
+
+# ✅ THIS is the missing part: 'db' is the firebase_admin.db now available
+
+# 🎯 Function you need
+def get_realtime_status(ride_id):
+    ref = db.reference(f"rides/{ride_id}")
+    return ref.get() or {}
